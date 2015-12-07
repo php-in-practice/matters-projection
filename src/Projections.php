@@ -66,7 +66,6 @@ final class Projections implements ProjectionsInterface
                 'yes', // checkpoints
                 $definition->enabled() ? 'yes' : 'no'
             );
-        var_dump($url);
 
         $request = new Request(
             'POST',
@@ -80,7 +79,6 @@ final class Projections implements ProjectionsInterface
 
         $this->sendRequest($request);
         $this->ensureStatusCodeIsGood($url);
-        var_dump($this->lastResponse->getStatusCode());
         if ($this->lastResponse->getStatusCode() != 201) {
             throw new \Exception('Failed to create projection');
         }

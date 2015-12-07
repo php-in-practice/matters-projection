@@ -89,32 +89,5 @@ final class Definition
         ];
 
         return $definition;
-/*
-  "coreProcessingTime": 31,
-  "version": 5,
-  "epoch": 5,
-  "effectiveName": "projects",
-  "writesInProgress": 0,
-  "readsInProgress": 0,
-  "partitionsCached": 1,
-  "status": "Running",
-  "stateReason": "",
-  "name": "projects",
-  "mode": "Continuous",
-  "position": "C:451060301/P:451060301; PhpInPractice\\\\Cid\\\\ProjectStarted: -1; ",
-  "progress": 100.0,
-  "lastCheckpoint": "C:451060301/P:451060301; PhpInPractice\\\\Cid\\\\ProjectStarted: -1; ",
-  "eventsProcessedAfterRestart": 11,
-  "statusUrl": "http://192.168.99.100:2113/projection/projects",
-  "stateUrl": "http://192.168.99.100:2113/projection/projects/state",
-  "resultUrl": "http://192.168.99.100:2113/projection/projects/result",
-  "queryUrl": "http://192.168.99.100:2113/projection/projects/query%3Fconfig=yes",
-  "enableCommandUrl": "http://192.168.99.100:2113/projection/projects/command/enable",
-  "disableCommandUrl": "http://192.168.99.100:2113/projection/projects/command/disable",
-  "checkpointStatus": "",
-  "bufferedEvents": 0,
-  "writePendingEventsBeforeCheckpoint": 0,
-  "writePendingEventsAfterCheckpoint": 0
-*/
     }
 }
