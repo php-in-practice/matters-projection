@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>./tests/unit/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+    <listeners>
+        <listener
+            class="Mockery\Adapter\Phpunit\TestListener"
+            file="vendor/mockery/mockery/library/Mockery/Adapter/Phpunit/TestListener.php"
+        />
+    </listeners>
+</phpunit>

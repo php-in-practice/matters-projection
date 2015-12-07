@@ -1,0 +1,26 @@
+{
+    "name": "php-in-practice/matters",
+    "type": "library",
+    "license": "MIT",
+    "authors": [ { "name": "Mike van Riel", "email": "me@mikevanriel.com" } ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "PhpInPractice\\Matters\\": [ "src/" ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpInPractice\\Matters\\": [ "tests/unit/" ]
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^6.0",
+        "marc-mabe/php-enum": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "mockery/mockery": "^0.9.4",
+        "dbellettini/eventstore-client": "^0.7.0"
+    }
+}
