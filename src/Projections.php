@@ -2,16 +2,15 @@
 
 namespace PhpInPractice\Matters;
 
-use EventStore\Exception\ConnectionFailedException;
-use EventStore\Exception\StreamDeletedException;
-use EventStore\Exception\StreamNotFoundException;
-use EventStore\Exception\UnauthorizedException;
-use EventStore\Http\ResponseCode;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
+use PhpInPractice\Matters\Projection\Exception\ConnectionFailedException;
+use PhpInPractice\Matters\Projection\Exception\ProjectionDeletedException;
+use PhpInPractice\Matters\Projection\Exception\ProjectionNotFoundException;
+use PhpInPractice\Matters\Projection\Exception\UnauthorizedException;
 use PhpInPractice\Matters\Projection\ProjectionDeletion;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -258,8 +257,8 @@ final class Projections implements ProjectionsInterface
     /**
      * @param  string $projectionUrl
      *
-     * @throws StreamDeletedException
-     * @throws StreamNotFoundException
+     * @throws ProjectionDeletedException
+     * @throws ProjectionNotFoundException
      * @throws UnauthorizedException
      */
     private function ensureStatusCodeIsGood($projectionUrl)
@@ -274,17 +273,17 @@ final class Projections implements ProjectionsInterface
     private function initBadCodeHandlers()
     {
         $this->badCodeHandlers = [
-            ResponseCode::HTTP_NOT_FOUND => function ($projectionUrl) {
-                throw new StreamNotFoundException(sprintf('No projection found at %s', $projectionUrl));
+            404 => function ($projectionUrl) {
+                throw new ProjectionNotFoundException(sprintf('No projection found at %s', $projectionUrl));
             },
 
-            ResponseCode::HTTP_GONE => function ($projectionUrl) {
-                throw new StreamDeletedException(
+            410 => function ($projectionUrl) {
+                throw new ProjectionDeletedException(
                     sprintf('Projection at %s has been permanently deleted', $projectionUrl)
                 );
             },
 
-            ResponseCode::HTTP_UNAUTHORIZED => function ($projectionUrl) {
+            401 => function ($projectionUrl) {
                 throw new UnauthorizedException(sprintf('Tried to projection stream %s got 401', $projectionUrl));
             }
         ];
