@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpInPractice\Matters\Projection;
+namespace PhpInPractice\Matters;
 
 use MabeEnum\Enum;
 

@@ -27,9 +27,9 @@ class ProjectionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->thenConnectionIsChecked();
 
-        $projections = Projections::forUrl('127.0.0.1', $this->httpClient);
+        $projections = EventStoreProjections::forUrl('127.0.0.1', $this->httpClient);
 
-        $this->assertInstanceOf(Projections::class, $projections);
+        $this->assertInstanceOf(EventStoreProjections::class, $projections);
         $this->assertAttributeSame('127.0.0.1', 'url', $projections);
     }
 
