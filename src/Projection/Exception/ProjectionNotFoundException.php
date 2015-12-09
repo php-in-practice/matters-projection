@@ -2,6 +2,6 @@
 
 namespace PhpInPractice\Matters\Projection\Exception;
 
-class ProjectionNotFoundException extends \Exception
+final class ProjectionNotFoundException extends \Exception
 {
 }

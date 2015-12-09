@@ -2,6 +2,6 @@
 
 namespace PhpInPractice\Matters\Projection\Exception;
 
-class ProjectionDeletedException extends \Exception
+final class ProjectionDeletedException extends \Exception
 {
 }

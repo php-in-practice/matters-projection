@@ -2,6 +2,6 @@
 
 namespace PhpInPractice\Matters\Projection\Exception;
 
-class UnauthorizedException extends \Exception
+final class UnauthorizedException extends \Exception
 {
 }
