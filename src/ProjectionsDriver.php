@@ -4,7 +4,7 @@ namespace PhpInPractice\Matters;
 use EventStore\StreamDeletion;
 use GuzzleHttp\ClientInterface;
 
-interface Projections
+interface ProjectionsDriver
 {
     public static function forUrl($url, ClientInterface $httpClient = null);
 

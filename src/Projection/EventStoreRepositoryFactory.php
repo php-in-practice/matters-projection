@@ -2,18 +2,18 @@
 
 namespace PhpInPractice\Matters\Projection;
 
-use PhpInPractice\Matters\Projections;
+use PhpInPractice\Matters\ProjectionsDriver;
 
 final class EventStoreRepositoryFactory implements RepositoryFactory
 {
-    /** @var Projections */
+    /** @var ProjectionsDriver */
     private $projector;
 
     /** @var StateSerializer */
     private $projectionSerializer;
 
     public function __construct(
-        Projections $projector,
+        ProjectionsDriver $projector,
         StateSerializer $projectionSerializer
     ) {
         $this->projector            = $projector;

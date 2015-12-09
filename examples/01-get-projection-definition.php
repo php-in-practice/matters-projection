@@ -1,7 +1,7 @@
 <?php
 use PhpInPractice\Matters\Projection\Definition;
-use PhpInPractice\Matters\Projection\ProjectionDeletion;
-use PhpInPractice\Matters\EventStoreProjections;
+use PhpInPractice\Matters\ProjectionDeletion;
+use PhpInPractice\Matters\EventStoreProjectionsDriver;
 
 include __DIR__ . '/../vendor/autoload.php';
 
@@ -19,7 +19,7 @@ JS;
 $credentials = \PhpInPractice\Matters\Credentials::fromUsernameAndPassword('admin', 'changeit');
 $projectionDefinition = Definition::createNew('example_projects', $query);
 
-$projections = EventStoreProjections::forUrl('192.168.99.100:2113');
+$projections = EventStoreProjectionsDriver::forUrl('192.168.99.100:2113');
 $projections->create($credentials, $projectionDefinition);
 
 $definition = $projections->get('example_projects');

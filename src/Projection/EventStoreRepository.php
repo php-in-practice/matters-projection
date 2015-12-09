@@ -2,7 +2,7 @@
 
 namespace PhpInPractice\Matters\Projection;
 
-use PhpInPractice\Matters\Projections;
+use PhpInPractice\Matters\ProjectionsDriver;
 
 final class EventStoreRepository implements Repository
 {
@@ -12,14 +12,14 @@ final class EventStoreRepository implements Repository
     /** @var string */
     private $projectionName;
 
-    /** @var Projections */
+    /** @var ProjectionsDriver */
     private $projections;
 
     /** @var StateSerializer */
     private $resultSerializer;
 
     public function __construct(
-        Projections $projections,
+        ProjectionsDriver $projections,
         StateSerializer $resultSerializer,
         $projectionClassName,
         $projectionName = null

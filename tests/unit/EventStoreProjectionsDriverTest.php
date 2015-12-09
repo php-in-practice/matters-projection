@@ -6,10 +6,10 @@ use GuzzleHttp\ClientInterface;
 use Mockery as m;
 
 /**
- * @coversDefaultClass PhpInPractice\Matters\Projections
+ * @coversDefaultClass PhpInPractice\Matters\EventStoreProjectionsDriver
  * @covers ::<private>
  */
-class ProjectionsTest extends \PHPUnit_Framework_TestCase
+class EventStoreProjectionsDriverTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ClientInterface|m\MockInterface */
     private $httpClient;
@@ -27,9 +27,9 @@ class ProjectionsTest extends \PHPUnit_Framework_TestCase
     {
         $this->thenConnectionIsChecked();
 
-        $projections = EventStoreProjections::forUrl('127.0.0.1', $this->httpClient);
+        $projections = EventStoreProjectionsDriver::forUrl('127.0.0.1', $this->httpClient);
 
-        $this->assertInstanceOf(EventStoreProjections::class, $projections);
+        $this->assertInstanceOf(EventStoreProjectionsDriver::class, $projections);
         $this->assertAttributeSame('127.0.0.1', 'url', $projections);
     }
 

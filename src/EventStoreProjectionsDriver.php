@@ -14,7 +14,7 @@ use PhpInPractice\Matters\Projection\Exception\UnauthorizedException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class EventStoreProjections implements Projections
+final class EventStoreProjectionsDriver implements ProjectionsDriver
 {
     /** @var string */
     private $url;
