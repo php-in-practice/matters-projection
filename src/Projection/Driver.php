@@ -4,23 +4,19 @@ namespace PhpInPractice\Matters\Projection;
 use EventStore\StreamDeletion;
 use GuzzleHttp\ClientInterface;
 use PhpInPractice\Matters\Credentials;
-use PhpInPractice\Matters\Projection\DeletionMode as ProjectionDeletion;
 
 interface Driver
 {
+    const DELETION_SOFT = 'soft';
+    const DELETION_HARD = 'hard';
+
     public function get($name);
 
     public function create(Credentials $credentials, Definition $definition);
 
     public function update(Credentials $credentials, Definition $definition);
 
-    /**
-     * Delete a projection.
-     *
-     * @param Definition $definition
-     * @param ProjectionDeletion        $mode Deletion mode (soft or hard)
-     */
-    public function delete(Credentials $credentials, Definition $definition, ProjectionDeletion $mode);
+    public function delete(Credentials $credentials, Definition $definition, $mode = self::DELETION_SOFT);
 
     public function reset(Credentials $credentials, Definition $definition);
     public function start(Credentials $credentials, Definition $definition);

@@ -1,6 +1,5 @@
 <?php
 use PhpInPractice\Matters\Projection\Definition;
-use PhpInPractice\Matters\Projection\DeletionMode as ProjectionDeletion;
 use PhpInPractice\Matters\Projection\Driver\EventStore;
 
 include __DIR__ . '/../vendor/autoload.php';
@@ -27,5 +26,5 @@ var_dump($definition);
 
 var_dump($projections->result($definition));
 
-$projections->delete($credentials, $definition, ProjectionDeletion::SOFT());
+$projections->delete($credentials, $definition);
 

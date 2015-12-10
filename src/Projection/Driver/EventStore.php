@@ -32,6 +32,12 @@ final class EventStore implements Driver
     /** @var ResponseInterface|null */
     private $lastResponse;
 
+    /**
+     * @param string               $url
+     * @param ClientInterface|null $httpClient
+     *
+     * @return static
+     */
     public static function forUrl($url, ClientInterface $httpClient = null)
     {
         return new static($url, $httpClient);
@@ -59,8 +65,8 @@ final class EventStore implements Driver
                 '%s?name=%s&emit=%s&checkpoints=%s&enabled=%s',
                 $definition->mode(),
                 $definition->name(),
-                'no',  // emit
-                'yes', // checkpoints
+                $definition->mayEmitNewEvents() === true ? 'yes' : 'no',
+                $definition->mode() === Definition::MODE_CONTINUOUS ? 'yes' : 'no', // checkpoints
                 $definition->enabled() ? 'yes' : 'no'
             );
 
@@ -104,13 +110,7 @@ final class EventStore implements Driver
         $this->ensureStatusCodeIsGood($url);
     }
 
-    /**
-     * Delete a stream
-     *
-     * @param Definition $definition
-     * @param ProjectionDeletion        $mode Deletion mode (soft or hard)
-     */
-    public function delete(Credentials $credentials, Definition $definition, ProjectionDeletion $mode)
+    public function delete(Credentials $credentials, Definition $definition, $mode = self::DELETION_SOFT)
     {
         $this->stop($credentials, $definition);
         $url     = $this->projectionUrl($definition->name());
@@ -123,7 +123,7 @@ final class EventStore implements Driver
             ]
         );
 
-        if ($mode == ProjectionDeletion::HARD()) {
+        if ($mode == self::DELETION_HARD) {
             $request = $request->withHeader('ES-HardDelete', 'true');
         }
 
