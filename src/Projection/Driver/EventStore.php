@@ -1,20 +1,24 @@
 <?php
 
-namespace PhpInPractice\Matters;
+namespace PhpInPractice\Matters\Projection\Driver;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
+use PhpInPractice\Matters\Credentials;
+use PhpInPractice\Matters\Projection\Definition;
+use PhpInPractice\Matters\Projection\Driver;
 use PhpInPractice\Matters\Projection\Exception\ConnectionFailedException;
 use PhpInPractice\Matters\Projection\Exception\ProjectionDeletedException;
 use PhpInPractice\Matters\Projection\Exception\ProjectionNotFoundException;
 use PhpInPractice\Matters\Projection\Exception\UnauthorizedException;
+use PhpInPractice\Matters\Projection\DeletionMode as ProjectionDeletion;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class EventStoreProjectionsDriver implements ProjectionsDriver
+final class EventStore implements Driver
 {
     /** @var string */
     private $url;
@@ -42,18 +46,13 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
 
         $data = current(json_decode($this->lastResponse->getBody()->getContents(), true)['projections']);
 
-        $queryUrl = urldecode($data['queryUrl']);
-        $request = new Request('GET', $queryUrl);
-        $this->sendRequest($request);
-        $this->ensureStatusCodeIsGood($queryUrl);
+        $definition = Definition::fromEventStore($data);
+        $definition = $definition->withUpdatedQuery($this->query($definition));
 
-        $data2 = json_decode($this->lastResponse->getBody()->getContents(), true);
-        $data['query'] = $data2['query'];
-
-        return Projection\Definition::fromEventstore($data);
+        return $definition;
     }
 
-    public function create(Credentials $credentials, Projection\Definition $definition)
+    public function create(Credentials $credentials, Definition $definition)
     {
         $url = $this->projectionManagementUrl() .
             sprintf(
@@ -82,9 +81,9 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         }
     }
 
-    public function update(Credentials $credentials, Projection\Definition $definition)
+    public function update(Credentials $credentials, Definition $definition)
     {
-        // replace this with a url retrieved from the Definition
+        // TODO: replace this with a url retrieved from the Definition
         $url = sprintf(
             '%s/query?emit=%s',
             $this->projectionUrl($definition->name()),
@@ -108,10 +107,10 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
     /**
      * Delete a stream
      *
-     * @param Projection\Definition $definition
+     * @param Definition $definition
      * @param ProjectionDeletion        $mode Deletion mode (soft or hard)
      */
-    public function delete(Credentials $credentials, Projection\Definition $definition, ProjectionDeletion $mode)
+    public function delete(Credentials $credentials, Definition $definition, ProjectionDeletion $mode)
     {
         $this->stop($credentials, $definition);
         $url     = $this->projectionUrl($definition->name());
@@ -132,9 +131,9 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         $this->ensureStatusCodeIsGood($url);
     }
 
-    public function reset(Credentials $credentials, Projection\Definition $definition)
+    public function reset(Credentials $credentials, Definition $definition)
     {
-        $url     = $this->projectionUrl($definition->name()) . '/command/reset';
+        $url     = $definition->urls()['commands']['reset'];
         $request = new Request(
             'POST',
             $url,
@@ -148,9 +147,9 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         $this->ensureStatusCodeIsGood($url);
     }
 
-    public function start(Credentials $credentials, Projection\Definition $definition)
+    public function start(Credentials $credentials, Definition $definition)
     {
-        $url     = $this->projectionUrl($definition->name()) . '/command/enable';
+        $url     = $definition->urls()['commands']['enable'];
         $request = new Request(
             'POST',
             $url,
@@ -164,9 +163,9 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         $this->ensureStatusCodeIsGood($url);
     }
 
-    public function stop(Credentials $credentials, Projection\Definition $definition)
+    public function stop(Credentials $credentials, Definition $definition)
     {
-        $url     = $this->projectionUrl($definition->name()) . '/command/disable';
+        $url     = $definition->urls()['commands']['disable'];
         $request = new Request(
             'POST',
             $url,
@@ -180,10 +179,10 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         $this->ensureStatusCodeIsGood($url);
     }
 
-    public function result(Projection\Definition $definition, $partition = null)
+    public function result(Definition $definition, $partition = null)
     {
         // TODO: replace this with a url retrieved from the Definition
-        $projectionUrl = $this->projectionUrl($definition->name()) . '/result';
+        $projectionUrl = $definition->urls()['result'];
         if ($partition) {
             $projectionUrl .= '?partition=' . $partition;
         }
@@ -194,10 +193,9 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         return $this->lastResponseAsJson();
     }
 
-    public function state(Projection\Definition $definition, $partition = null)
+    public function state(Definition $definition, $partition = null)
     {
-        // TODO: replace this with a url retrieved from the Definition
-        $projectionUrl = $this->projectionUrl($definition->name()) . '/state';
+        $projectionUrl = $definition->urls()['state'];
         if ($partition) {
             $projectionUrl .= '?partition=' . $partition;
         }
@@ -206,6 +204,21 @@ final class EventStoreProjectionsDriver implements ProjectionsDriver
         $this->ensureStatusCodeIsGood($projectionUrl);
 
         return $this->lastResponseAsJson();
+    }
+
+    /**
+     * @param $definition
+     *
+     * @return mixed
+     */
+    public function query(Definition $definition)
+    {
+        $queryUrl = $definition->urls()['queryUrl'];
+        $request  = new Request('GET', $queryUrl);
+        $this->sendRequest($request);
+        $this->ensureStatusCodeIsGood($queryUrl);
+
+        return $this->lastResponseAsJson()['query'];
     }
 
     private function __construct($url, ClientInterface $httpClient = null)

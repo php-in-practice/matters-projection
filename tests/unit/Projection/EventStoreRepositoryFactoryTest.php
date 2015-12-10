@@ -2,7 +2,6 @@
 
 namespace PhpInPractice\Matters\Projection;
 
-use PhpInPractice\Matters\ProjectionsDriver;
 use Mockery as m;
 
 /**
@@ -15,7 +14,7 @@ final class EventStoreRepositoryFactoryTest extends \PHPUnit_Framework_TestCase
     /** @var StateSerializer|m\MockInterface */
     private $resultSerializer;
 
-    /** @var ProjectionsDriver|m\MockInterface */
+    /** @var Driver|m\MockInterface */
     private $projectionsDriver;
 
     /** @var EventStoreRepositoryFactory */
@@ -24,7 +23,7 @@ final class EventStoreRepositoryFactoryTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->resultSerializer = m::mock(StateSerializer::class);
-        $this->projectionsDriver = m::mock(ProjectionsDriver::class);
+        $this->projectionsDriver = m::mock(Driver::class);
 
         $this->factory = new EventStoreRepositoryFactory($this->projectionsDriver, $this->resultSerializer);
     }

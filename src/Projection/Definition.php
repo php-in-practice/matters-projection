@@ -13,6 +13,7 @@ final class Definition
     private $status = 'stopped';
     private $progress = 0;
     private $urls = [];
+    private $mayEmitNewEvents = null;
 
     public function name()
     {
@@ -27,6 +28,11 @@ final class Definition
     public function query()
     {
         return $this->query;
+    }
+
+    public function status()
+    {
+        return $this->status;
     }
 
     public function enabled()
@@ -44,21 +50,34 @@ final class Definition
         return $this->urls;
     }
 
-    public static function createNew($name, $query, $mode = self::MODE_CONTINUOUS, $enabled = true)
+    /**
+     * This method returns whether the projection may emit new events out of its own accord.
+     *
+     * In some situations this is unknown because the information is not exposed; in this case null is returned to
+     * indicate that this is not known.
+     *
+     * @return null|boolean
+     */
+    public function mayEmitNewEvents()
     {
-        $definition = new static();
-        $definition->name = $name;
-        $definition->mode = $mode;
-        $definition->enabled = $enabled;
+        return $this->mayEmitNewEvents;
+    }
+
+    public function withUpdatedQuery($query)
+    {
+        $definition = clone $this;
         $definition->query = $query;
 
         return $definition;
     }
 
-    public static function withUpdatedQuery(Definition $oldDefinition, $query)
+    public static function createNew($name, $query, $mayEmitNewEvents = false, $mode = self::MODE_CONTINUOUS)
     {
-        $definition = clone $oldDefinition;
+        $definition = new static();
+        $definition->name = $name;
+        $definition->mode = $mode;
         $definition->query = $query;
+        $definition->mayEmitNewEvents = $mayEmitNewEvents;
 
         return $definition;
     }
@@ -68,13 +87,12 @@ final class Definition
      *
      * @return Definition
      */
-    public static function fromEventstore(array $data)
+    public static function fromEventStore(array $data)
     {
         $definition = new static();
         $definition->name = $data['name'];
         $definition->mode = strtolower($data['mode']);
         $definition->status = strtolower($data['status']);
-        $definition->query = $data['query'];
         $definition->progress = $data['progress'];
         $definition->urls = [
             'state' => $data['stateUrl'],

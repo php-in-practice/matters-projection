@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpInPractice\Matters;
+namespace PhpInPractice\Matters\Projection;
 
 use MabeEnum\Enum;
 
@@ -8,7 +8,7 @@ use MabeEnum\Enum;
  * @method static SOFT()
  * @method static HARD()
  */
-final class ProjectionDeletion extends Enum
+final class DeletionMode extends Enum
 {
     const SOFT = 'soft';
     const HARD = 'hard';

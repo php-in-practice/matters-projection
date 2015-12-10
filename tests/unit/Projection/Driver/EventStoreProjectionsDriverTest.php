@@ -1,12 +1,13 @@
 <?php
 
-namespace PhpInPractice\Matters;
+namespace PhpInPractice\Matters\Projection;
 
 use GuzzleHttp\ClientInterface;
 use Mockery as m;
+use PhpInPractice\Matters\Projection\Driver\EventStore;
 
 /**
- * @coversDefaultClass PhpInPractice\Matters\EventStoreProjectionsDriver
+ * @coversDefaultClass PhpInPractice\Matters\Projection\Driver\EventStore
  * @covers ::<private>
  */
 class EventStoreProjectionsDriverTest extends \PHPUnit_Framework_TestCase
@@ -27,9 +28,9 @@ class EventStoreProjectionsDriverTest extends \PHPUnit_Framework_TestCase
     {
         $this->thenConnectionIsChecked();
 
-        $projections = EventStoreProjectionsDriver::forUrl('127.0.0.1', $this->httpClient);
+        $projections = EventStore::forUrl('127.0.0.1', $this->httpClient);
 
-        $this->assertInstanceOf(EventStoreProjectionsDriver::class, $projections);
+        $this->assertInstanceOf(EventStore::class, $projections);
         $this->assertAttributeSame('127.0.0.1', 'url', $projections);
     }
 
