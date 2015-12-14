@@ -213,7 +213,7 @@ final class EventStore implements Driver
      */
     public function query(Definition $definition)
     {
-        $queryUrl = $definition->urls()['queryUrl'];
+        $queryUrl = $definition->urls()['query'];
         $request  = new Request('GET', $queryUrl);
         $this->sendRequest($request);
         $this->ensureStatusCodeIsGood($queryUrl);
