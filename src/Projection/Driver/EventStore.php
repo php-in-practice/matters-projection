@@ -190,7 +190,7 @@ final class EventStore implements Driver
         $this->sendRequest(new Request('GET', $projectionUrl));
         $this->ensureStatusCodeIsGood($projectionUrl);
 
-        return $this->lastResponseAsJson();
+        return $this->lastResponseAsJson() ?: [];
     }
 
     public function state(Definition $definition, $partition = null)
@@ -203,7 +203,7 @@ final class EventStore implements Driver
         $this->sendRequest(new Request('GET', $projectionUrl));
         $this->ensureStatusCodeIsGood($projectionUrl);
 
-        return $this->lastResponseAsJson();
+        return $this->lastResponseAsJson() ?: [];
     }
 
     /**
@@ -218,7 +218,8 @@ final class EventStore implements Driver
         $this->sendRequest($request);
         $this->ensureStatusCodeIsGood($queryUrl);
 
-        return $this->lastResponseAsJson()['query'];
+        $response = $this->lastResponseAsJson();
+        return $response ? $response['query'] : '';
     }
 
     private function __construct($url, ClientInterface $httpClient = null)
