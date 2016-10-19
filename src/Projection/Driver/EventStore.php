@@ -309,6 +309,14 @@ final class EventStore implements Driver
 
     private function lastResponseAsJson()
     {
-        return json_decode($this->lastResponse->getBody(), true);
+        $response = json_decode($this->lastResponse->getBody(), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidResponseException(
+                'Unable to interpret response from eventstore, system reports: ' . json_last_error_msg()
+            );
+        }
+
+        return $response;
     }
 }
