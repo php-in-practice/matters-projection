@@ -24,9 +24,21 @@ class EventStoreProxyTest extends \PHPUnit_Framework_TestCase
      * @test
      * @covers ::forUrl
      */
-    public function it_should_create_instance_given_a_proxy_url()
+    public function it_should_create_instance_given_a_proxy_url_and_a_client()
     {
         $proxy = EventStoreProxy::forUrl('127.0.0.1', $this->httpClient);
+
+        $this->assertInstanceOf(EventStoreProxy::class, $proxy);
+        $this->assertAttributeSame('127.0.0.1', 'url', $proxy);
+    }
+
+    /**
+     * @test
+     * @covers ::forUrl
+     */
+    public function it_should_create_instance_given_a_proxy_url_and_no_client()
+    {
+        $proxy = EventStoreProxy::forUrl('127.0.0.1');
 
         $this->assertInstanceOf(EventStoreProxy::class, $proxy);
         $this->assertAttributeSame('127.0.0.1', 'url', $proxy);
