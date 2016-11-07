@@ -2,6 +2,7 @@
 
 namespace PhpInPractice\Matters\Projection\Driver;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use PhpInPractice\Matters\Projection\Proxy;
 
